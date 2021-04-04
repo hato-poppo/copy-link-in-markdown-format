@@ -10,38 +10,29 @@
   });
 
   // メニューをクリック時に実行
-  chrome.contextMenus.onClicked.addListener(item => {
+  chrome.contextMenus.onClicked.addListener(() => {
 
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, tabs => {
-      const title = tabs[0].title;
-      const url = tabs[0].url;
-      const link = `[${title}](${url})`;
-  
-      console.log(link);
-  
-      // テキストエリアを用意する
-      var copyFrom = document.createElement("textarea");
-      // テキストエリアへ値をセット
-      copyFrom.textContent = link;
-    
-      // bodyタグの要素を取得
-      var bodyElm = document.getElementsByTagName("body")[0];
-      // 子要素にテキストエリアを配置
-      bodyElm.appendChild(copyFrom);
-    
-      // テキストエリアの値を選択
-      copyFrom.select();
-      
-      // コピーコマンド発行
-      document.execCommand('copy');
-      // 追加テキストエリアを削除
-      bodyElm.removeChild(copyFrom);
+      const link = `[${tabs[0].title}](${tabs[0].url})`;
+      copyToClipboard(link);
     });
 
   });
+
+  const copyToClipboard = (text) => {
+      var tmpArea = document.createElement("textarea");
+      tmpArea.textContent = text;
+    
+      // bodyタグの子要素としてテキストエリアを配置する
+      var bodyElm = document.getElementsByTagName("body")[0];
+      bodyElm.appendChild(tmpArea);
+    
+      // テキストエリアの値を選択
+      tmpArea.select();
+
+      // コピーコマンド発行
+      document.execCommand('copy');
+      // 追加テキストエリアを削除
+      bodyElm.removeChild(tmpArea);
+  } 
 }
-// https://webllica.com/copy-text-to-clipboard/
-// https://qiita.com/plumfield56/items/e98c247888d82a79c7ea
-// https://belltree.life/chrome-extension-tutorial/
-// https://liginc.co.jp/web/tool/browser/163575
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/query
