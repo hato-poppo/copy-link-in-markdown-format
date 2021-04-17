@@ -5,7 +5,7 @@
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: 'copy-link',
-      title: '記事リンクをコピー'
+      title: 'ページリンクを取得'
     });
   });
 
