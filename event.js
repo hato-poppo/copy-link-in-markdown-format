@@ -12,32 +12,28 @@
   // メニューをクリック時に実行
   chrome.contextMenus.onClicked.addListener(() => {
     chrome.tabs.query({currentWindow: true, active: true},
-      (tabs) => generateLinkText(tabs).then(copyToClipboard).catch(onError));
+      (tabs) => {
+        const tab = tabs[0];
+        generateLinkText(tab).then((text) => copyToClipboard(tab, text)).catch(onError);
+      })
   });
 
-  const generateLinkText = (tabs) => {
-    const tab = tabs[0]; // Current Window && Active は1つしか存在しないので、最初の要素だけ取得でOK
+  const generateLinkText = (tab) => {
     return new Promise((resolve) => {
       resolve(`[${tab.title}](${tab.url})`);
     });
   }
 
-  // TODO: もっとイケてる書き方があるはず。
-  const copyToClipboard = (text) => {
-      var tmpArea = document.createElement("textarea");
-      tmpArea.textContent = text;
-    
-      // bodyタグの子要素としてテキストエリアを配置する
-      var bodyElm = document.getElementsByTagName("body")[0];
-      bodyElm.appendChild(tmpArea);
-    
-      // テキストエリアの値を選択
-      tmpArea.select();
+  const copyToClipboard = (tab, text) => {
+    const injectFunction = (text) => {
+      navigator.clipboard.writeText(text);
+    }
 
-      // コピーコマンド発行
-      document.execCommand('copy');
-      // 追加テキストエリアを削除
-      bodyElm.removeChild(tmpArea);
+    chrome.scripting.executeScript({
+      target: {tabId: tab.id},
+      func: injectFunction,
+      args: [text]
+    });
   }
 
   const onError = (e) => {

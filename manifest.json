@@ -11,7 +11,8 @@
   
     "permissions": [
       "activeTab",
-      "contextMenus"
+      "contextMenus",
+      "scripting"
     ],
     "icons": {
       "16": "public/icon-16.png",
