@@ -1,12 +1,11 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Copy Link In Markdown Format",
     "version": "1.0.0",
     "description": "記事タイトルとそのURLをマークダウン形式のリンクとしてコピーする為の拡張機能",
 
     "background": {
-      "scripts": ["event.js"],
-      "persistent": false
+      "service_worker": "event.js"
     },
   
     "permissions": [
